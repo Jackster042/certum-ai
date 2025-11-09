@@ -5,7 +5,6 @@ import { SignInButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 
-// Client component with auth logic
 function AuthenticatedNavButton() {
   const { isSignedIn, isLoaded } = useUser();
 
@@ -24,7 +23,6 @@ function AuthenticatedNavButton() {
   );
 }
 
-// Dynamic import with no SSR for client-only rendering
 const NavButtonClient = dynamic(() => Promise.resolve(AuthenticatedNavButton), {
   loading: () => (
     <SignInButton forceRedirectUrl="/app">

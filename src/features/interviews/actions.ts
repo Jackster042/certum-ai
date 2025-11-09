@@ -125,7 +125,6 @@ export async function generateInterviewFeedback(interviewId: string) {
     };
   }
 
-  //   TODO:  FINISH GENERATE INTERVIEW FUNCTION
   const feedback = await getAiInterviewFeedback({
     humeChatId: interview.humeChatId,
     jobInfo: interview.jobInfo,

@@ -40,7 +40,6 @@ export function StartCall({
   durationRef.current = callDurationTimestamp;
   const router = useRouter();
 
-  // Sync chat ID
   useEffect(() => {
     if (chatMetadata?.chatId == null || interviewId == null) {
       return;
@@ -48,7 +47,6 @@ export function StartCall({
     updateInterview(interviewId, { humeChatId: chatMetadata.chatId });
   }, [chatMetadata?.chatId, interviewId]);
 
-  // Sync duration
   useEffect(() => {
     if (interviewId == null) return;
     const intervalId = setInterval(() => {
@@ -60,7 +58,6 @@ export function StartCall({
     return () => clearInterval(intervalId);
   }, [interviewId]);
 
-  // Disconnect
   useEffect(() => {
     if (readyState !== VoiceReadyState.CLOSED) return;
     if (interviewId == null) {

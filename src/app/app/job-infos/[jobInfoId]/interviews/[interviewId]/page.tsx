@@ -33,17 +33,6 @@ export default async function InterviewPage({
 }) {
   const { jobInfoId, interviewId } = await params;
 
-  // const interview = await getCurrentUser().then(
-  //   async ({ userId, redirectToSignIn }) => {
-  //     if (userId == null) return redirectToSignIn();
-
-  //     const interview = await getInterview(interviewId, userId!);
-  //     if (interview == null) return notFound();
-
-  //     return interview;
-  //   }
-  // );
-
   const currentUserData = await getCurrentUser();
   if (currentUserData.userId == null) return currentUserData.redirectToSignIn();
   const userId = currentUserData.userId!;
@@ -65,10 +54,6 @@ export default async function InterviewPage({
     feedback: string | null;
     jobInfo: { id: string; userId: string };
   };
-
-  // TODO: CHECK HUME CHAT ID , AND WHERE IT SHOWS IN LOGS
-  // TODO: CREATE MORE CONSISTENT LOGS
-  console.log(interviewPromise, "interviewPromise");
 
   return (
     <div className="container my-4 space-y-4">
@@ -122,7 +107,6 @@ export default async function InterviewPage({
           />
         </div>
 
-        {/* MESSAGE COMPONENTS HERE */}
         <Suspense
           fallback={<Loader2Icon className="animate-spin m-auto size-24" />}
         >
@@ -133,7 +117,6 @@ export default async function InterviewPage({
   );
 }
 
-// TODO: MESSAGE COMPONENT
 async function Messages({
   interview,
 }: {

@@ -116,7 +116,6 @@ export function ResumePageClient({ jobInfoId }: { jobInfoId: string }) {
               onDrop={(e) => {
                 e.preventDefault();
                 setIsDragOver(false);
-                // TODO: HANDLE FILE UPLOAD LOGIC
                 handleFileUpload(e.dataTransfer.files[0] ?? null);
               }}
             >
@@ -147,7 +146,6 @@ export function ResumePageClient({ jobInfoId }: { jobInfoId: string }) {
         </CardContent>
       </Card>
 
-      {/* TODO: ANALYZE RESULT COMPONENT */}
       <AnalyzeResults aiAnalysis={aiAnalysis} isLoading={isLoading} />
     </div>
   );
@@ -200,7 +198,6 @@ function AnalyzeResults({
                 <AccordionContent>
                   <div className="space-y-4">
                     <div className="text-muted-foreground">
-                      {/* SUMMARY */}
                       {category?.summary == null ? (
                         <span className="space-y-2">
                           <Skeleton />
@@ -211,7 +208,6 @@ function AnalyzeResults({
                       )}
                     </div>
 
-                    {/* FEEDBACK */}
                     <div className="space-y-3">
                       {category?.feedback == null ? (
                         <>

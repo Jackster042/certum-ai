@@ -7,7 +7,6 @@ import Link from "next/link";
 export default function ClientNavButton() {
   const { isSignedIn, isLoaded } = useUser();
 
-  // During loading, show sign in button to prevent flash
   if (!isLoaded) {
     return (
       <SignInButton forceRedirectUrl="/app">

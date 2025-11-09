@@ -37,13 +37,11 @@ export function NewQuestionClientPage({
     completion: question,
     setCompletion: setQuestion,
     isLoading: isGeneratingQuestion,
-    // data,
   } = useCompletion({
     api: "/api/ai/questions/generate-question",
     onFinish: () => {
       setStatus("awaiting-answer");
 
-      // Small delay to ensure the database write completes
       setTimeout(async () => {
         try {
           const response = await fetch("/api/ai/questions/get-latest-id", {
@@ -149,15 +147,13 @@ function QuestionContainer({
         <ResizablePanelGroup direction="vertical" className="flex-grow">
           <ResizablePanel id="question" defaultSize={25} minSize={5}>
             <ScrollArea className="h-full min-w-48 *:h-full">
-              {/* Change the conditional rendering here */}
-              {question ? ( // If there's any question text, display it
+              {question ? (
                 <MarkdownRenderer className="p-6">{question}</MarkdownRenderer>
-              ) : status === "init" ? ( // If no question and status is 'init', show initial message
+              ) : status === "init" ? (
                 <p className="text-base md:text-lg flex items-center justify-center h-full p-6">
                   Get started by selecting a question difficulty above.
                 </p>
               ) : (
-                // You might want a loading spinner here while generating
                 <p className="text-base md:text-lg flex items-center justify-center h-full p-6">
                   Generating question...
                 </p>

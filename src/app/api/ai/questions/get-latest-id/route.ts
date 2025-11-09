@@ -11,7 +11,6 @@ export async function POST(req: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  // Verify user owns this job info
   const jobInfo = await db.query.JobInfoTable.findFirst({
     where: and(eq(JobInfoTable.id, jobInfoId), eq(JobInfoTable.userId, userId)),
   });
@@ -20,7 +19,6 @@ export async function POST(req: Request) {
     return new Response("Job info not found", { status: 403 });
   }
 
-  // Get the most recent question for this job info
   const question = await db.query.QuestionTable.findFirst({
     where: eq(QuestionTable.jobInfoId, jobInfoId),
     orderBy: desc(QuestionTable.createdAt),

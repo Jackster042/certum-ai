@@ -482,7 +482,7 @@ function StatisticsSection() {
 
         <div className="text-center mt-12">
           <p className="text-sm text-muted-foreground">
-            * Based on internal data from CertumAI users compared to industry
+            Based on internal data from CertumAI users compared to industry
             benchmarks from 2023-2024
           </p>
         </div>
