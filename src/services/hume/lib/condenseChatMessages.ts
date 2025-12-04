@@ -1,7 +1,7 @@
-import { ConnectionMessage } from "@humeai/voice-react";
-import { JsonMessage, ReturnChatEvent } from "hume/api/resources/empathicVoice";
+import { ConnectionMessage, JSONMessage } from "@humeai/voice-react";
+import { Hume } from "hume";
 
-type Message = JsonMessage | ConnectionMessage | ReturnChatEvent;
+type Message = JSONMessage | ConnectionMessage | Hume.empathicVoice.ReturnChatEvent;
 
 export function condenseChatMessages(messages: Message[]) {
   return messages.reduce((acc, message) => {
