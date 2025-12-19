@@ -26,6 +26,7 @@ import {
 import { SignInButton } from "@clerk/nextjs";
 import { PricingTable } from "@/services/clerk/components/PricingTable";
 import NavButtonWrapper from "./NavButtonWrapper";
+import { DemoBanner } from "./DemoBanner";
 
 const features = [
   {
@@ -51,6 +52,9 @@ const features = [
 export default function CertumAILandingPage() {
   return (
     <div className="min-h-screen bg-background">
+      {/* Demo Banner */}
+      <DemoBanner />
+      
       {/* Navigation */}
       <Navbar />
 
