@@ -15,8 +15,7 @@ export const metadata: Metadata = {
   description:"An innovative interview preparation platform that leverages AI to simulate realistic job interviews and provide actionable feedback on performance.",
    icons: {
     icon: 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22 fill=%22%236366f1%22>〰️</text></svg>',
-  },
-,
+  }
 };
 
 export default function RootLayout({
