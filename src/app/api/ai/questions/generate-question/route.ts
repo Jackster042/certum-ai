@@ -8,6 +8,8 @@ import { getJobInfoIdTag } from "@/features/jobInfos/dbCache";
 import { getQuestionJobInfoTag } from "@/features/questions/dbCache";
 import { canCreateQuestion } from "@/features/questions/permissions";
 import { PLAN_LIMIT_MESSAGE } from "@/lib/errorToast";
+import { incrementDemoQuestions } from "@/features/users/db";
+import { DEMO_MODE } from "@/app/data/demoConfig";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { and, asc, eq } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
@@ -56,6 +58,11 @@ export async function POST(req: Request) {
       });
 
       console.log("Question saved with ID:", id);
+
+      // Increment demo usage if in demo mode
+      if (DEMO_MODE) {
+        await incrementDemoQuestions(userId);
+      }
     },
   });
 

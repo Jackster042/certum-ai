@@ -1,6 +1,7 @@
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { redirect } from "next/navigation";
 import { Navbar } from "./_Navbar";
+import { DemoBanner } from "@/components/DemoBanner";
 
 export default async function OnboardingPage({
   children,
@@ -14,6 +15,7 @@ export default async function OnboardingPage({
 
   return (
     <>
+      <DemoBanner />
       <Navbar user={user} />
       {children}
     </>

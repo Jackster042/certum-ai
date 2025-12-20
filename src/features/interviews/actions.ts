@@ -13,6 +13,8 @@ import { and, eq } from "drizzle-orm";
 import { insertInterview, updateInterview as updateInterviewDb } from "./db";
 import { getInterviewIdTag } from "./dbCache";
 import { getAiInterviewFeedback } from "@/services/ai/interviews";
+import { incrementDemoInterviews } from "../users/db";
+import { DEMO_MODE } from "@/app/data/demoConfig";
 
 const arj = arcjet({
   characteristics: ["userId"],
@@ -68,6 +70,11 @@ export async function createInterview({
   }
 
   const interview = await insertInterview({ jobInfoId, duration: "00:00:00" });
+
+  // Increment demo usage if in demo mode
+  if (DEMO_MODE) {
+    await incrementDemoInterviews(userId);
+  }
 
   return { error: false, id: interview.id };
 }

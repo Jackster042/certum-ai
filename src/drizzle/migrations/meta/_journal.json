@@ -15,6 +15,13 @@
       "when": 1756084797603,
       "tag": "0001_chief_tempest",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1766261990900,
+      "tag": "0002_unusual_the_santerians",
+      "breakpoints": true
     }
   ]
 }

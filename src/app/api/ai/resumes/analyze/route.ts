@@ -3,6 +3,8 @@ import { JobInfoTable } from "@/drizzle/schema";
 import { getJobInfoIdTag } from "@/features/jobInfos/dbCache";
 import { canRunResumeAnalysis } from "@/features/resumeAnalyses/permissions";
 import { PLAN_LIMIT_MESSAGE } from "@/lib/errorToast";
+import { incrementDemoResumes } from "@/features/users/db";
+import { DEMO_MODE } from "@/app/data/demoConfig";
 import { analyzeResumesForJob } from "@/services/ai/resumes/ai";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { and, eq } from "drizzle-orm";
@@ -53,6 +55,11 @@ export async function POST(req: Request) {
     resumeFile,
     jobInfo,
   });
+
+  // Increment demo usage if in demo mode
+  if (DEMO_MODE) {
+    await incrementDemoResumes(userId);
+  }
 
   return res.toTextStreamResponse();
 }
