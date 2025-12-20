@@ -450,12 +450,6 @@ This is a portfolio project, but suggestions and feedback are welcome! Feel free
 
 ---
 
-## 📝 License
-
-MIT © 2025 [Nemanja Stojanovic](https://github.com/Jackster042)
-
----
-
 ## 👨‍💻 Author
 
 **Your Name**
