@@ -389,13 +389,10 @@ While there's no formal test suite, verify functionality by:
 ### Production Deployment (Vercel + Neon)
 
 **Current Live Deployment:**
-- **URL**: [https://ai-saas-interview-project.vercel.app](https://ai-saas-interview-project.vercel.app)
+- **URL**: [https://certumai.xyz/]
 - **Database**: Neon Serverless PostgreSQL
 - **Status**: ✅ Live and operational
 
-### Deploy Your Own
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/ai-saas-interview-project)
 
 **Steps:**
 1. Fork this repository
@@ -410,19 +407,6 @@ Ensure all variables from `.env.example` are configured in Vercel:
 - Project Settings → Environment Variables
 - Add all required API keys and database credentials
 - Separate staging/production environments if needed
-
----
-
-## 📸 Screenshots
-
-> **Note**: Add screenshots of your application here
-
-- Landing page with features showcase
-- User dashboard with interview history
-- Job information creation form
-- Live voice interview interface
-- AI-generated feedback report
-- Resume analysis results
 
 ---
 
@@ -468,17 +452,16 @@ This is a portfolio project, but suggestions and feedback are welcome! Feel free
 
 ## 📝 License
 
-This project is open source and available under the [MIT License](LICENSE).
+MIT © 2025 [Nemanja Stojanovic](https://github.com/Jackster042)
 
 ---
 
 ## 👨‍💻 Author
 
 **Your Name**
-- Portfolio: [yourportfolio.com](https://yourportfolio.com)
-- LinkedIn: [linkedin.com/in/yourprofile](https://linkedin.com/in/yourprofile)
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
+- Portfolio: TBA
+- LinkedIn: TBA
+- Email: feemail042@gmail.com
 
 ---
 
@@ -499,6 +482,5 @@ This project is open source and available under the [MIT License](LICENSE).
 
 Built with ❤️ using Next.js, React, and AI
 
-[Report Bug](https://github.com/your-username/ai-saas-interview-project/issues) • [Request Feature](https://github.com/your-username/ai-saas-interview-project/issues)
 
 </div>
