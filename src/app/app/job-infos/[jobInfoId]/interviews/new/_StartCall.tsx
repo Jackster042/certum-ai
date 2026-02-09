@@ -9,7 +9,7 @@ import { errorToast } from "@/lib/errorToast";
 import { CondensedMessages } from "@/services/hume/components/CondensedMessages";
 import { condenseChatMessages } from "@/services/hume/lib/condenseChatMessages";
 import { useVoice, VoiceReadyState } from "@humeai/voice-react";
-import { Loader2Icon, MicIcon, MicOffIcon, PhoneOffIcon } from "lucide-react";
+import { MicIcon, MicOffIcon, PhoneOffIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -70,52 +70,86 @@ export function StartCall({
     router.push(`/app/job-infos/${jobInfo.id}/interviews/${interviewId}`);
   }, [interviewId, readyState, router, jobInfo.id]);
 
+  // IDLE — dramatic start screen
   if (readyState === VoiceReadyState.IDLE) {
     return (
-      <div className="flex justify-center items-center h-screen-header">
-        <Button
-          size="lg"
-          className="cursor-pointer"
-          onClick={async () => {
-            const res = await createInterview({ jobInfoId: jobInfo.id });
-            if (res.error) {
-              return errorToast(res.message);
-            }
-            setInterviewId(res.id);
-            connect({
-              auth: { type: "accessToken", value: accessToken },
-              configId: env.NEXT_PUBLIC_HUME_CONFIG_ID,
-              sessionSettings: {
-                type: "session_settings",
-                variables: {
-                  userName: user.name,
-                  title: jobInfo.title || "Not specified",
-                  description: jobInfo.description || "Not specified",
-                  experienceLevel: jobInfo.experienceLevel,
+      <div className="flex flex-col justify-center items-center h-screen-header relative">
+        {/* Copper gradient glow */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.04]">
+          <div
+            className="w-full h-full"
+            style={{
+              background:
+                "radial-gradient(ellipse at 50% 40%, oklch(0.62 0.16 45) 0%, transparent 60%)",
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 text-center">
+          {/* Copper pulse dot */}
+          <div className="w-3 h-3 rounded-full bg-copper animate-copper-pulse mx-auto mb-8" />
+
+          <h1 className="font-serif text-4xl sm:text-5xl font-bold text-foreground mb-3">
+            Ready when you are.
+          </h1>
+          <p className="font-sans text-muted-foreground mb-10">
+            Your AI interviewer is standing by.
+          </p>
+
+          <button
+            className="group inline-flex items-center gap-3 bg-foreground text-background px-10 py-4 text-xs font-sans uppercase tracking-[0.15em] font-medium hover:bg-copper hover:text-copper-foreground transition-colors duration-300 cursor-pointer"
+            onClick={async () => {
+              const res = await createInterview({ jobInfoId: jobInfo.id });
+              if (res.error) {
+                return errorToast(res.message);
+              }
+              setInterviewId(res.id);
+              connect({
+                auth: { type: "accessToken", value: accessToken },
+                configId: env.NEXT_PUBLIC_HUME_CONFIG_ID,
+                sessionSettings: {
+                  type: "session_settings",
+                  variables: {
+                    userName: user.name,
+                    title: jobInfo.title || "Not specified",
+                    description: jobInfo.description || "Not specified",
+                    experienceLevel: jobInfo.experienceLevel,
+                  },
                 },
-              },
-            });
-          }}
-        >
-          Start Interview
-        </Button>
+              });
+            }}
+          >
+            Begin Interview
+          </button>
+        </div>
       </div>
     );
   }
 
+  // CONNECTING / CLOSED — loading
   if (
     readyState === VoiceReadyState.CONNECTING ||
     readyState === VoiceReadyState.CLOSED
   ) {
     return (
-      <div className="flex items-center justify-center h-screen-reader">
-        <Loader2Icon className="animate-spin size-24" />
+      <div className="flex items-center justify-center h-screen-header">
+        <div className="text-center">
+          <div className="dot-loader mx-auto mb-4">
+            <span />
+            <span />
+            <span />
+          </div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+            Connecting...
+          </p>
+        </div>
       </div>
     );
   }
 
+  // OPEN — active call
   return (
-    <div className="overflow-y-auto h-screen-reader flex flex-col-reverse">
+    <div className="overflow-y-auto h-screen-header flex flex-col-reverse">
       <div className="container flex py-6 flex-col items-center justify-end gap-4">
         <Messages user={user} />
         <Controls />
@@ -146,11 +180,11 @@ function Controls() {
     useVoice();
 
   return (
-    <div className="flex gap-5 rounded border px-5 py-2 w-fit sticky bottom-6 bg-background items-center">
+    <div className="flex gap-6 border border-border/60 px-6 py-3 w-fit sticky bottom-6 bg-background/95 backdrop-blur-sm items-center">
       <Button
         variant="ghost"
         size="icon"
-        className="-mx-3"
+        className="-mx-2"
         onClick={() => (isMuted ? unmute() : mute())}
       >
         {isMuted ? <MicOffIcon className="text-destructive" /> : <MicIcon />}
@@ -159,13 +193,13 @@ function Controls() {
       <div className="self-stretch">
         <FftVisualizer fft={micFft} />
       </div>
-      <div className="text-sm text-muted-foreground tabular-nums">
+      <div className="font-mono text-xs text-muted-foreground tabular-nums">
         {callDurationTimestamp}
       </div>
       <Button
         variant="ghost"
         size="icon"
-        className="-mx-3"
+        className="-mx-2"
         onClick={disconnect}
       >
         <PhoneOffIcon className="text-destructive" />
@@ -177,13 +211,13 @@ function Controls() {
 
 function FftVisualizer({ fft }: { fft: number[] }) {
   return (
-    <div className="flex gap-1 items-center h-full">
+    <div className="flex gap-0.5 items-center h-full">
       {fft.map((value, index) => {
         const percent = (value / 4) * 100;
         return (
           <div
             key={index}
-            className="min-h-0.5 bg-primary/75 w-0.5 rounded"
+            className="min-h-0.5 bg-copper/75 w-0.5"
             style={{ height: `${percent < 10 ? 0 : percent}%` }}
           />
         );

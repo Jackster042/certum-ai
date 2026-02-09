@@ -6,7 +6,6 @@ import { JobInfoForm } from "@/features/jobInfos/components/JobInfoForm";
 import { getJobInfoIdTag } from "@/features/jobInfos/dbCache";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { and, eq } from "drizzle-orm";
-import { Loader2 } from "lucide-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -18,15 +17,31 @@ export default async function JobInfoEditPage({
 }) {
   const { jobInfoId } = await params;
   return (
-    <div className="container my-4 space-y-4 max-w-5xl">
+    <div className="container py-8 space-y-6 max-w-4xl">
       <JobInfoBackLink jobInfoId={jobInfoId} />
 
-      <h1 className="text-3xl md:text-4xl">Edit job description</h1>
+      <div>
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-copper mb-2">
+          Edit
+        </p>
+        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-foreground">
+          Update job description
+        </h1>
+        <div className="w-12 h-0.5 bg-copper mt-4" />
+      </div>
 
       <Card>
         <CardContent>
           <Suspense
-            fallback={<Loader2 className="animate-spin mx-auto size-24" />}
+            fallback={
+              <div className="py-12 flex justify-center">
+                <div className="dot-loader">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              </div>
+            }
           >
             <SuspendedForm jobInfoId={jobInfoId} />
           </Suspense>

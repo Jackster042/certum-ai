@@ -9,7 +9,7 @@ export function MarkdownRenderer({
   return (
     <div
       className={cn(
-        "max-w-none prose prose-neutral dark:prose-invert font-sans",
+        "max-w-none prose prose-neutral dark:prose-invert font-sans prose-headings:font-serif prose-headings:tracking-tight prose-p:leading-relaxed prose-a:text-copper prose-a:no-underline hover:prose-a:underline prose-strong:font-semibold prose-blockquote:border-l-copper prose-blockquote:font-serif prose-blockquote:italic",
         className
       )}
     >

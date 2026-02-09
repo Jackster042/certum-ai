@@ -1,6 +1,5 @@
 import { UserAvatar } from "@/features/users/components/UserAvatar";
 import { cn } from "@/lib/utils";
-import { BrainCircuitIcon } from "lucide-react";
 import React from "react";
 
 export function CondensedMessages({
@@ -15,38 +14,64 @@ export function CondensedMessages({
   maxFft?: number;
 }) {
   return (
-    <div className={cn("flex flex-col gap-4 w-full", className)}>
+    <div className={cn("flex flex-col gap-5 w-full", className)}>
       {messages.map((message, index) => {
-        const shouldAnimate = index === messages.length - 1 && maxFft > 0;
+        const shouldAnimate =
+          index === messages.length - 1 && !message.isUser && maxFft > 0;
 
         return (
           <div
             key={index}
             className={cn(
-              "flex items-center gap-5 border pl-4 pr-6 py-4 rounded max-w-3/4",
-              message.isUser ? "self-end" : "self-start"
+              "flex items-start gap-4 max-w-[80%]",
+              message.isUser ? "self-end flex-row-reverse" : "self-start"
             )}
           >
+            {/* Avatar / Brand mark */}
             {message.isUser ? (
-              <UserAvatar user={user} className="size-6 flex-shrink-0" />
+              <UserAvatar user={user} className="size-6 shrink-0 mt-1" />
             ) : (
-              <div className="relative">
+              <div className="relative mt-1">
                 <div
                   className={cn(
-                    "absolute inset-0 border-muted border-4 rounded-full",
+                    "absolute inset-0 border-copper/30 border-2 rounded-full",
                     shouldAnimate ? "animate-ping" : "hidden"
                   )}
                 />
-                <BrainCircuitIcon
-                  className="size-6 flex-shrink-0 relative"
-                  style={shouldAnimate ? { scale: maxFft / 8 + 1 } : undefined}
-                />
+                <div
+                  className="size-6 shrink-0 border border-border flex items-center justify-center font-serif text-[10px] font-bold text-copper relative"
+                  style={
+                    shouldAnimate ? { scale: maxFft / 8 + 1 } : undefined
+                  }
+                >
+                  C
+                </div>
               </div>
             )}
-            <div className="flex flex-col gap-1">
-              {message.content.map((text, i) => (
-                <span key={i}>{text}</span>
-              ))}
+
+            {/* Message content */}
+            <div
+              className={cn(
+                "py-3 px-5",
+                message.isUser
+                  ? "bg-foreground text-background"
+                  : "border-l-2 border-copper/30 bg-muted/40"
+              )}
+            >
+              {/* Speaker label */}
+              <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-copper mb-1.5">
+                {message.isUser ? "You" : "Interviewer"}
+              </p>
+              <div
+                className={cn(
+                  "flex flex-col gap-1",
+                  message.isUser ? "font-sans text-sm" : "font-serif text-sm italic"
+                )}
+              >
+                {message.content.map((text, i) => (
+                  <span key={i}>{text}</span>
+                ))}
+              </div>
             </div>
           </div>
         );

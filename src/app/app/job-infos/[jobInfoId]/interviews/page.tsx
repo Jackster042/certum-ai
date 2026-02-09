@@ -1,6 +1,6 @@
 import { JobInfoBackLink } from "@/features/jobInfos/components/JobInfoBackLink";
 import { Suspense } from "react";
-import { ArrowRightIcon, Loader2Icon, PlusIcon } from "lucide-react";
+import { ArrowRightIcon, PlusIcon } from "lucide-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { getJobInfoIdTag } from "@/features/jobInfos/dbCache";
 import { getInterviewJobInfoTag } from "@/features/interviews/dbCache";
@@ -11,13 +11,6 @@ import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { formatDateTime } from "@/lib/formatDateTime";
 
 export default async function InterviewsPage({
@@ -27,13 +20,20 @@ export default async function InterviewsPage({
 }) {
   const { jobInfoId } = await params;
 
-  console.log(jobInfoId, "jobInfoId");
   return (
-    <div className="container py-4 gap-4 h-screen-header flex flex-col items-start">
+    <div className="container py-8 gap-6 h-screen-header flex flex-col items-start">
       <JobInfoBackLink jobInfoId={jobInfoId} />
 
       <Suspense
-        fallback={<Loader2Icon className="size-24 animate-spin m-auto" />}
+        fallback={
+          <div className="flex-1 flex items-center justify-center w-full">
+            <div className="dot-loader">
+              <span />
+              <span />
+              <span />
+            </div>
+          </div>
+        }
       >
         <SuspendedPage jobInfoId={jobInfoId} />
       </Suspense>
@@ -46,56 +46,69 @@ async function SuspendedPage({ jobInfoId }: { jobInfoId: string }) {
   if (userId == null) return redirectToSignIn();
 
   const interviews = await getInterviews(jobInfoId, userId);
-  console.log(interviews, "INTERVIEWS FROM db");
   if (interviews.length === 0) {
     return redirect(`/app/job-infos/${jobInfoId}/interviews/new`);
   }
 
   return (
-    <div className="space-y-6 w-full">
-      <div className="flex gap=2 justify-between">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl">Interviews</h1>
+    <div className="space-y-8 w-full">
+      <div className="flex items-end justify-between">
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-copper mb-2">
+            Session History
+          </p>
+          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-foreground">
+            Interviews
+          </h1>
+          <div className="w-12 h-0.5 bg-copper mt-4" />
+        </div>
         <Button asChild>
           <Link href={`/app/job-infos/${jobInfoId}/interviews/new`}>
             <PlusIcon />
-            New Interview
+            New Session
           </Link>
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 has-hover:*:not-hover:opacity-70">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border border-border has-hover:*:not-hover:opacity-60">
+        {/* New interview card */}
         <Link
-          className="transition-opacity"
+          className="group transition-all duration-200"
           href={`/app/job-infos/${jobInfoId}/interviews/new`}
         >
-          <Card className="h-full flex items-center justify-center border-dashed border-3 border-transparent hover:border-primary/50 transition-colors shadows-none">
-            <div className="flex items-center gap-2 tet-lg">
-              <PlusIcon className="size-6" />
-              New Interview
+          <div className="p-8 border border-dashed border-border/50 h-full flex items-center justify-center hover:border-copper/40 transition-colors">
+            <div className="flex items-center gap-3 text-muted-foreground group-hover:text-copper transition-colors">
+              <PlusIcon className="size-4" />
+              <span className="font-mono text-xs uppercase tracking-[0.15em]">
+                New Interview
+              </span>
             </div>
-          </Card>
+          </div>
         </Link>
 
-        {/* RENDER INTERVIEWS HERE */}
+        {/* Interview cards */}
         {interviews.map((interview) => (
           <Link
-            className="hover:scale-[1.02] transition-[transform_opacity]"
+            className="group transition-all duration-200 relative"
             href={`/app/job-infos/${jobInfoId}/interviews/${interview.id}`}
             key={interview.id}
           >
-            <Card className="h-full">
-              <div className="flex items-center justify-between h-full">
-                <CardHeader className="gap-1 flex-grow">
-                  <CardTitle className="text-lg">
+            <div className="p-8 border border-border/50 h-full relative overflow-hidden">
+              {/* Copper hover border */}
+              <div className="absolute left-0 top-0 bottom-0 w-0 bg-copper group-hover:w-1 transition-all duration-300" />
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-serif text-base font-semibold text-foreground group-hover:translate-x-1 transition-transform duration-200">
                     {formatDateTime(interview.createdAt)}
-                  </CardTitle>
-                </CardHeader>
-                <CardDescription>{interview.duration}</CardDescription>
-                <CardContent>
-                  <ArrowRightIcon className="size-6" />
-                </CardContent>
+                  </p>
+                  <p className="font-mono text-xs text-muted-foreground mt-1">
+                    {interview.duration}
+                  </p>
+                </div>
+                <ArrowRightIcon className="size-4 text-muted-foreground group-hover:text-copper transition-colors" />
               </div>
-            </Card>
+            </div>
           </Link>
         ))}
       </div>
@@ -116,8 +129,6 @@ async function getInterviews(jobInfoId: string, userId: string) {
     with: { jobInfo: { columns: { userId: true } } },
     orderBy: desc(InterviewTable.updatedAt),
   });
-
-  console.log(data, "data from GET INTERVIEWS FROM DB");
 
   return data.filter((interview) => interview.jobInfo.userId === userId);
 }

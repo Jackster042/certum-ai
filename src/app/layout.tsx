@@ -1,14 +1,27 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Playfair_Display, DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@/services/clerk/components/ClerkProivder";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
 import { WebsiteSchema, OrganizationSchema } from "@/components/StructuredData";
 
-const outfitSans = Outfit({
-  variable: "--font-outfit-sans",
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -94,7 +107,7 @@ export default function RootLayout({
           <WebsiteSchema />
           <OrganizationSchema />
         </head>
-        <body className={`${outfitSans.variable} antialiased font-sans`}>
+        <body className={`${playfair.variable} ${dmSans.variable} ${jetbrainsMono.variable} antialiased font-sans`}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

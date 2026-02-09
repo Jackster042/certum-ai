@@ -12,7 +12,7 @@ import { JobInfoForm } from "@/features/jobInfos/components/JobInfoForm";
 import { getJobInfoUserTag } from "@/features/jobInfos/dbCache";
 import { getCurrentUser } from "@/services/clerk/lib/getCurrentUser";
 import { desc, eq } from "drizzle-orm";
-import { ArrowRightIcon, Loader2Icon } from "lucide-react";
+import { ArrowRightIcon } from "lucide-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -24,7 +24,11 @@ export default function AppPage() {
     <Suspense
       fallback={
         <div className="h-screen-header flex items-center justify-center">
-          <Loader2Icon className="animate-spin size-24" />
+          <div className="dot-loader">
+            <span />
+            <span />
+            <span />
+          </div>
         </div>
       }
     >
@@ -41,47 +45,64 @@ async function JobInfos() {
 
   if (jobInfos.length === 0) return <NoJobInfos />;
 
-  console.log(jobInfos, "JOB INFOS FROM DB+");
-
   return (
-    <div className="container my-4">
-      <div className="flex gap-2 justify-between mb-6">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl mb-4">
-          Select a job description
-        </h1>
+    <div className="container py-8">
+      {/* Header */}
+      <div className="flex items-end justify-between mb-8">
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-copper mb-2">
+            Your Briefs
+          </p>
+          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-foreground">
+            Job Descriptions
+          </h1>
+          {/* Rule line */}
+          <div className="w-12 h-0.5 bg-copper mt-4" />
+        </div>
         <Button asChild>
-          <Link href="/app/job-infos/new">Create job description</Link>
+          <Link href="/app/job-infos/new">New Brief</Link>
         </Button>
       </div>
 
+      {/* Job cards grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 has-hover:*:not-hover:opacity-70">
         {jobInfos?.map((jobInfo) => (
           <Link
-            className="hover:scale-[1.02] transition-[transform_opacity]"
+            className="group hover-copper-border transition-all duration-200"
             href={`/app/job-infos/${jobInfo.id}`}
             key={jobInfo.id}
           >
-            <Card className="w-full">
+            <Card className="w-full h-full">
               <div className="flex items-center justify-between h-full">
-                <div className="space-y-4 h-full">
+                <div className="space-y-3 h-full flex-1">
                   <CardHeader>
-                    <CardTitle>{jobInfo.name}</CardTitle>
+                    <CardTitle className="font-serif text-lg">
+                      {jobInfo.name}
+                    </CardTitle>
                   </CardHeader>
-                  <CardContent className="text-muted-foreground line-clamp-3">
+                  <CardContent className="text-muted-foreground text-sm font-sans line-clamp-2 leading-relaxed">
                     {jobInfo.description}
                   </CardContent>
                   <CardFooter className="flex gap-2">
-                    <Badge variant="outline">
+                    <Badge
+                      variant="outline"
+                      className="font-mono text-[10px] uppercase tracking-wider"
+                    >
                       {formatExperienceLevel(jobInfo.experienceLevel)}
                     </Badge>
                     {jobInfo.title && (
-                      <Badge variant="outline">{jobInfo.title}</Badge>
+                      <Badge
+                        variant="outline"
+                        className="font-mono text-[10px] uppercase tracking-wider"
+                      >
+                        {jobInfo.title}
+                      </Badge>
                     )}
                   </CardFooter>
                 </div>
 
-                <CardContent>
-                  <ArrowRightIcon size="6" />
+                <CardContent className="shrink-0">
+                  <ArrowRightIcon className="size-4 text-muted-foreground group-hover:text-copper transition-colors" />
                 </CardContent>
               </div>
             </Card>
@@ -94,16 +115,20 @@ async function JobInfos() {
 
 function NoJobInfos() {
   return (
-    <div className="container my-4 max-w-5xl">
-      <h1 className="text-3xl md:text-4xl lg:text-5xl mb-4">
-        Welcome to CertumAI
+    <div className="container py-8 max-w-5xl">
+      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-copper mb-2">
+        Welcome
+      </p>
+      <h1 className="font-serif text-4xl sm:text-5xl font-bold text-foreground mb-2">
+        Begin.
       </h1>
-      <p className="text-muted-foreground mb-8">
-        To get started, enter information about the type of job you are wanting
-        to apply for. This can be specific information copied directly from a
-        job listing or general information such as the tech stack you want to
-        work in. The more specific you are in the description the closer the
-        test interviews will be to the real thing.
+      <div className="w-12 h-0.5 bg-copper mt-4 mb-8" />
+      <p className="text-muted-foreground font-sans leading-relaxed mb-8 max-w-2xl">
+        Enter information about the type of job you are pursuing. This can be
+        specific details copied directly from a listing, or general information
+        like the tech stack you want to work with. The more precise your
+        description, the closer your practice interviews will be to the real
+        thing.
       </p>
       <Card>
         <CardContent>

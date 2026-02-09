@@ -1,5 +1,4 @@
 import { ArrowLeftIcon } from "lucide-react";
-import { Button } from "./ui/button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -13,19 +12,15 @@ export function BackLink({
   className?: string;
 }) {
   return (
-    <Button
-      asChild
-      variant="ghost"
-      size="sm"
-      className={cn("-ml-3", className)}
+    <Link
+      href={href}
+      className={cn(
+        "inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground hover:text-copper transition-colors group",
+        className
+      )}
     >
-      <Link
-        href={href}
-        className="flex items-center gap-2 text-sm text-muted-foreground"
-      >
-        <ArrowLeftIcon />
-        {children}
-      </Link>
-    </Button>
+      <ArrowLeftIcon className="size-3 group-hover:-translate-x-0.5 transition-transform" />
+      {children}
+    </Link>
   );
 }

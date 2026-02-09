@@ -2,7 +2,6 @@
 
 import {
   BookOpenIcon,
-  BrainCircuitIcon,
   FileSlidersIcon,
   LogOut,
   SpeechIcon,
@@ -19,7 +18,6 @@ import { SignOutButton, useClerk } from "@clerk/nextjs";
 import Link from "next/link";
 import { UserAvatar } from "@/features/users/components/UserAvatar";
 import { useParams, usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
 
 const navLinks = [
   { name: "Interviews", href: "interviews", Icon: SpeechIcon },
@@ -33,47 +31,58 @@ export function Navbar({ user }: { user: { name: string; imageUrl: string } }) {
   const pathName = usePathname();
 
   return (
-    <nav className="h-header border-b">
+    <nav className="h-header border-b border-border/60">
       <div className="container flex h-full items-center justify-between">
-        <Link href="/app" className="flex items-center gap-2">
-          <BrainCircuitIcon className="size-8 text-primary" />
-          <span className="text-xl font-bold">CertumAI</span>
+        {/* Typographic logo */}
+        <Link href="/app" className="flex items-center gap-1">
+          <span className="font-serif text-xl font-bold tracking-tight text-foreground">
+            CERTUM
+          </span>
+          <span className="font-mono text-xs text-copper font-medium -translate-y-1.5">
+            AI
+          </span>
         </Link>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
+          {/* Contextual nav links */}
           {typeof jobInfoId === "string" &&
             navLinks.map(({ name, href, Icon }) => {
               const hrefPath = `/app/job-infos/${jobInfoId}/${href}`;
+              const isActive = pathName === hrefPath;
 
               return (
-                <Button
-                  variant={pathName === hrefPath ? "secondary" : "ghost"}
+                <Link
                   key={name}
-                  asChild
-                  className="cursor-pointer max-sm:hidden"
+                  href={hrefPath}
+                  className={`hidden sm:flex items-center gap-2 text-xs uppercase tracking-[0.12em] font-sans transition-colors relative pb-0.5 ${
+                    isActive
+                      ? "text-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-copper"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
                 >
-                  <Link href={hrefPath}>
-                    <Icon />
-                    {name}
-                  </Link>
-                </Button>
+                  <Icon className="size-3.5" />
+                  {name}
+                </Link>
               );
             })}
 
           <ThemeToggle />
 
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger className="outline-none">
               <UserAvatar user={user} />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem onClick={() => openUserProfile()}>
-                <User className="mr-2" />
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem
+                onClick={() => openUserProfile()}
+                className="text-xs uppercase tracking-wider font-sans"
+              >
+                <User className="mr-2 size-3.5" />
                 Profile
               </DropdownMenuItem>
               <SignOutButton>
-                <DropdownMenuItem>
-                  <LogOut className="mr-2" />
+                <DropdownMenuItem className="text-xs uppercase tracking-wider font-sans">
+                  <LogOut className="mr-2 size-3.5" />
                   Logout
                 </DropdownMenuItem>
               </SignOutButton>

@@ -64,7 +64,7 @@ export function ResumePageClient({ jobInfoId }: { jobInfoId: string }) {
     if (file == null) return;
 
     if (file.size > 10 * 1024 * 1024) {
-      toast.error("FIle extends 100MB limit");
+      toast.error("File exceeds 10MB limit");
       return;
     }
 
@@ -85,12 +85,13 @@ export function ResumePageClient({ jobInfoId }: { jobInfoId: string }) {
 
   return (
     <div className="space-y-8 w-full">
+      {/* Upload area */}
       <Card>
         <CardHeader>
-          <CardTitle>
+          <CardTitle className="font-serif">
             {isLoading ? "Analyzing your resume..." : "Upload your resume"}
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="font-sans">
             {isLoading
               ? "This may take a couple minutes"
               : "Get personalized feedback on your resume based on the job"}
@@ -100,10 +101,10 @@ export function ResumePageClient({ jobInfoId }: { jobInfoId: string }) {
           <LoadingSwap isLoading={isLoading}>
             <div
               className={cn(
-                "mt-2 border-2 border-dashed rounded-lg p-6 transition-colors relative",
+                "mt-2 border-2 border-dashed p-10 transition-colors relative",
                 isDragOver
-                  ? "border-primary bg-primary/5"
-                  : "border-muted-foreground/50 bg-muted/10"
+                  ? "border-copper bg-copper/5"
+                  : "border-muted-foreground/30 bg-muted/10"
               )}
               onDragOver={(e) => {
                 e.preventDefault();
@@ -131,13 +132,13 @@ export function ResumePageClient({ jobInfoId }: { jobInfoId: string }) {
               />
 
               <div className="flex flex-col items-center justify-center gap-4 text-center">
-                <UploadIcon className="size-12 text-muted-foreground mt-2" />
+                <UploadIcon className="size-8 text-copper" />
                 <div className="space-y-2">
-                  <p className="text-lg">
-                    Drop your resume here or click to upload
+                  <p className="font-serif text-lg text-foreground">
+                    Drop your resume here
                   </p>
-                  <p className="text-xs text-muted-foreground">
-                    Supports formats: PDF,Word docs, and text files
+                  <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+                    PDF &middot; Word &middot; Text &middot; Max 10MB
                   </p>
                 </div>
               </div>
@@ -165,7 +166,7 @@ function AnalyzeResults({
   const sections: Record<Keys, string> = {
     ats: "ATS Compatibility",
     jobMatch: "Job Match",
-    writingAndFormatting: "Writing and Formatting",
+    writingAndFormatting: "Writing & Formatting",
     keywordCoverage: "Keyword Coverage",
     other: "Additional Insights",
   };
@@ -173,14 +174,29 @@ function AnalyzeResults({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Analysis Results</CardTitle>
-        <CardDescription>
-          {aiAnalysis?.overallScore == null ? (
-            <Skeleton className="w-32" />
-          ) : (
-            `Overall Score: ${aiAnalysis.overallScore}`
-          )}
-        </CardDescription>
+        <div className="flex items-baseline justify-between">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-copper mb-2">
+              Analysis Report
+            </p>
+            <CardTitle className="font-serif text-2xl">Results</CardTitle>
+          </div>
+          <div>
+            {aiAnalysis?.overallScore == null ? (
+              <Skeleton className="w-20 h-10" />
+            ) : (
+              <div className="text-right">
+                <span className="font-mono text-4xl font-bold text-copper">
+                  {aiAnalysis.overallScore}
+                </span>
+                <span className="font-mono text-sm text-muted-foreground">
+                  /10
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="w-12 h-0.5 bg-copper mt-2" />
       </CardHeader>
       <CardContent>
         <Accordion type="multiple">
@@ -197,9 +213,9 @@ function AnalyzeResults({
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="space-y-4">
-                    <div className="text-muted-foreground">
+                    <div className="text-muted-foreground font-sans text-sm leading-relaxed">
                       {category?.summary == null ? (
-                        <span className="space-y-2">
+                        <span className="space-y-2 block">
                           <Skeleton />
                           <Skeleton className="w-3/4" />
                         </span>
@@ -245,20 +261,40 @@ function CategoryAccordionHeader({
   if (score == null) {
     badge = <Skeleton className="w-16" />;
   } else if (score >= 8) {
-    badge = <Badge>Excellent</Badge>;
+    badge = (
+      <Badge className="font-mono text-[9px] uppercase tracking-wider bg-copper/10 text-copper border-copper/30 border">
+        Excellent
+      </Badge>
+    );
   } else if (score >= 6) {
-    badge = <Badge variant="secondary">OK</Badge>;
+    badge = (
+      <Badge
+        variant="secondary"
+        className="font-mono text-[9px] uppercase tracking-wider"
+      >
+        OK
+      </Badge>
+    );
   } else {
-    badge = <Badge variant="destructive">Needs Work</Badge>;
+    badge = (
+      <Badge
+        variant="destructive"
+        className="font-mono text-[9px] uppercase tracking-wider"
+      >
+        Needs Work
+      </Badge>
+    );
   }
 
   return (
     <div className="flex items-start justify-between w-full">
-      <div className="flex flex-col items-start gap-1">
-        <span>{title}</span>
+      <div className="flex flex-col items-start gap-1.5">
+        <span className="font-serif text-base">{title}</span>
         <div className="no-underline">{badge}</div>
       </div>
-      {score == null ? <Skeleton className="w-12" /> : `${score}/10`}
+      <span className="font-mono text-sm text-muted-foreground">
+        {score == null ? <Skeleton className="w-12" /> : `${score}/10`}
+      </span>
     </div>
   );
 }
@@ -270,14 +306,14 @@ function FeedbackItem({
 }: Partial<z.infer<typeof aiAnalyzeSchema>["ats"]["feedback"][number]>) {
   if (name == null || message == null || type == null) return null;
 
-  const getColors = () => {
+  const getBorderColor = () => {
     switch (type) {
       case "strength":
-        return "bg-primary/10 border border-primary/50";
+        return "border-l-copper";
       case "major-improvement":
-        return "bg-destructive/10 dark:bg-destructive/20 border border-destructive/50 dark:border-destructive/70";
+        return "border-l-destructive";
       case "minor-improvement":
-        return "bg-warning/10 border border-warning/40";
+        return "border-l-warning";
       default:
         throw new Error(`Unknown feedback type: ${type satisfies never} `);
     }
@@ -286,7 +322,7 @@ function FeedbackItem({
   const getIcon = () => {
     switch (type) {
       case "strength":
-        return <CheckCircleIcon className="text-primary size-4" />;
+        return <CheckCircleIcon className="text-copper size-4" />;
       case "minor-improvement":
         return <AlertCircleIcon className="text-warning size-4" />;
       case "major-improvement":
@@ -299,14 +335,18 @@ function FeedbackItem({
   return (
     <div
       className={cn(
-        "flex items-baseline gap-3 pl-3 pr-5 py-5 rounded-lg",
-        getColors()
+        "flex items-baseline gap-3 pl-4 pr-5 py-4 border-l-4 bg-muted/20",
+        getBorderColor()
       )}
     >
-      <div>{getIcon()}</div>
+      <div className="shrink-0 mt-0.5">{getIcon()}</div>
       <div className="flex flex-col gap-1">
-        <div className="text-base">{name}</div>
-        <div className="text-muted-foreground">{message}</div>
+        <div className="font-serif text-sm font-medium text-foreground">
+          {name}
+        </div>
+        <div className="font-sans text-sm text-muted-foreground leading-relaxed">
+          {message}
+        </div>
       </div>
     </div>
   );

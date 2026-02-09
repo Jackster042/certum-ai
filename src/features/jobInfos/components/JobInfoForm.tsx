@@ -60,17 +60,22 @@ export function JobInfoForm({
 
   return (
     <Form {...form}>
-      <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+                Name
+              </FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  {...field}
+                  className="border-0 border-b border-border bg-transparent rounded-none px-0 focus-visible:ring-0 focus-visible:border-copper font-sans transition-colors"
+                />
               </FormControl>
-              <FormDescription>
+              <FormDescription className="font-sans text-xs">
                 This name is displayed in the UI for easy identification.
               </FormDescription>
               <FormMessage />
@@ -78,21 +83,24 @@ export function JobInfoForm({
           )}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
           <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Job Title</FormLabel>
+                <FormLabel className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+                  Job Title
+                </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     value={field.value ?? ""}
                     onChange={(e) => field.onChange(e.target.value || null)}
+                    className="border-0 border-b border-border bg-transparent rounded-none px-0 focus-visible:ring-0 focus-visible:border-copper font-sans transition-colors"
                   />
                 </FormControl>
-                <FormDescription>
+                <FormDescription className="font-sans text-xs">
                   Optional. Only enter if there is a specific job title you are
                   applying for.
                 </FormDescription>
@@ -106,16 +114,18 @@ export function JobInfoForm({
             name="experienceLevel"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Experience Level</FormLabel>
+                <FormLabel className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+                  Experience Level
+                </FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="w-full border-0 border-b border-border bg-transparent rounded-none px-0 focus:ring-0 focus-visible:ring-0 focus-visible:border-copper font-serif transition-colors">
                       <SelectValue />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
                     {experienceLevels.map((level) => (
-                      <SelectItem key={level} value={level}>
+                      <SelectItem key={level} value={level} className="font-sans text-sm">
                         {formatExperienceLevel(level)}
                       </SelectItem>
                     ))}
@@ -132,14 +142,17 @@ export function JobInfoForm({
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
+                Description
+              </FormLabel>
               <FormControl>
                 <Textarea
                   {...field}
                   placeholder="A Next.js 15 and React 19 full stack web developer job that uses Drizzle ORM and Postgres for database management."
+                  className="border-0 border-b border-border bg-transparent rounded-none px-0 focus-visible:ring-0 focus-visible:border-copper font-sans min-h-[120px] resize-none transition-colors"
                 />
               </FormControl>
-              <FormDescription>
+              <FormDescription className="font-sans text-xs">
                 Be as specific as possible. The more information you provide,
                 the better the interviews will be.
               </FormDescription>

@@ -55,7 +55,6 @@ export function NewQuestionClientPage({
           if (response.ok) {
             const { questionId: id } = await response.json();
             setQuestionId(id);
-            console.log("Got questionId:", id);
           }
         } catch (error) {
           console.error("Failed to get question ID:", error);
@@ -83,40 +82,45 @@ export function NewQuestionClientPage({
   });
 
   return (
-    <div className="flex flex-col items-center gap-4 w-full mx-w-[2000px] mx-auto flex-grow h-screen-header">
-      <div className="container flex gap-4 mt-4 items-center justify-between">
-        <div className="flex-grow basis-0">
-          <BackLink href={`/app/job-infos/${jobInfo.id}`}>
-            {jobInfo.name}
-          </BackLink>
-        </div>
-        <Controls
-          reset={() => {
-            setStatus("init");
-            setQuestion("");
-            setFeedback("");
-            setAnswer(null);
-          }}
-          status={status}
-          isLoading={isGeneratingQuestion || isGeneratingFeedback}
-          disableAnswerButton={
-            answer == null || answer.trim() === "" || questionId == null
-          }
-          generateQuestion={(difficulty) => {
-            setQuestion("");
-            setFeedback("");
-            setAnswer(null);
-            generateQuestion(difficulty, { body: { jobInfoId: jobInfo.id } });
-          }}
-          generateFeedback={() => {
-            if (answer == null || answer.trim() === "" || questionId == null)
-              return;
+    <div className="flex flex-col items-center w-full mx-auto flex-grow h-screen-header">
+      {/* Controls bar */}
+      <div className="w-full border-b border-border/60">
+        <div className="container flex gap-4 py-3 items-center justify-between">
+          <div className="flex-grow basis-0">
+            <BackLink href={`/app/job-infos/${jobInfo.id}`}>
+              {jobInfo.name}
+            </BackLink>
+          </div>
+          <Controls
+            reset={() => {
+              setStatus("init");
+              setQuestion("");
+              setFeedback("");
+              setAnswer(null);
+            }}
+            status={status}
+            isLoading={isGeneratingQuestion || isGeneratingFeedback}
+            disableAnswerButton={
+              answer == null || answer.trim() === "" || questionId == null
+            }
+            generateQuestion={(difficulty) => {
+              setQuestion("");
+              setFeedback("");
+              setAnswer(null);
+              generateQuestion(difficulty, { body: { jobInfoId: jobInfo.id } });
+            }}
+            generateFeedback={() => {
+              if (answer == null || answer.trim() === "" || questionId == null)
+                return;
 
-            generateFeedback(answer?.trim(), { body: { questionId } });
-          }}
-        />
-        <div className="flex-grow hidden md:block" />
+              generateFeedback(answer?.trim(), { body: { questionId } });
+            }}
+          />
+          <div className="flex-grow hidden md:block" />
+        </div>
       </div>
+
+      {/* Content panels */}
       <QuestionContainer
         question={question}
         feedback={feedback}
@@ -142,21 +146,40 @@ function QuestionContainer({
   setAnswer: (value: string) => void;
 }) {
   return (
-    <ResizablePanelGroup direction="horizontal" className="flex-grow border-t">
+    <ResizablePanelGroup direction="horizontal" className="flex-grow border-t border-border/40">
+      {/* Left: Question + Feedback */}
       <ResizablePanel id="question-and-feedback" defaultSize={50} minSize={5}>
         <ResizablePanelGroup direction="vertical" className="flex-grow">
           <ResizablePanel id="question" defaultSize={25} minSize={5}>
             <ScrollArea className="h-full min-w-48 *:h-full">
               {question ? (
-                <MarkdownRenderer className="p-6">{question}</MarkdownRenderer>
+                <div className="p-8">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-copper mb-4">
+                    Question
+                  </p>
+                  <div className="font-serif text-lg leading-relaxed text-foreground">
+                    <MarkdownRenderer>{question}</MarkdownRenderer>
+                  </div>
+                </div>
               ) : status === "init" ? (
-                <p className="text-base md:text-lg flex items-center justify-center h-full p-6">
-                  Get started by selecting a question difficulty above.
-                </p>
+                <div className="flex items-center justify-center h-full p-8">
+                  <div className="text-center">
+                    <p className="font-serif text-xl text-muted-foreground italic mb-2">
+                      Select a difficulty to begin.
+                    </p>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/50">
+                      Easy &middot; Medium &middot; Hard
+                    </p>
+                  </div>
+                </div>
               ) : (
-                <p className="text-base md:text-lg flex items-center justify-center h-full p-6">
-                  Generating question...
-                </p>
+                <div className="flex items-center justify-center h-full p-8">
+                  <div className="dot-loader">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                </div>
               )}
             </ScrollArea>
           </ResizablePanel>
@@ -165,9 +188,16 @@ function QuestionContainer({
               <ResizableHandle withHandle />
               <ResizablePanel id="feedback" defaultSize={75} minSize={5}>
                 <ScrollArea className="h-full min-w-48 *:h-full">
-                  <MarkdownRenderer className="p-6">
-                    {feedback}
-                  </MarkdownRenderer>
+                  <div className="p-8 bg-muted/30">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-copper mb-4">
+                      Feedback
+                    </p>
+                    <div className="border-l-2 border-copper/30 pl-6">
+                      <MarkdownRenderer>
+                        {feedback}
+                      </MarkdownRenderer>
+                    </div>
+                  </div>
                 </ScrollArea>
               </ResizablePanel>
             </>
@@ -176,15 +206,26 @@ function QuestionContainer({
       </ResizablePanel>
 
       <ResizableHandle withHandle />
+
+      {/* Right: Answer area */}
       <ResizablePanel id="answer" defaultSize={50} minSize={5}>
         <ScrollArea className="h-full min-w-48 *:h-full">
-          <Textarea
-            disabled={status !== "awaiting-answer"}
-            onChange={(e) => setAnswer(e.target.value)}
-            value={answer ?? ""}
-            placeholder="Type your answer here..."
-            className="w-full h-full resize-none border-none rounded-none focus-visible:ring focus-visible:ring-inset !text-base p-6"
-          />
+          <div className="h-full relative">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-copper absolute top-4 left-8 z-10 pointer-events-none">
+              Your Answer
+            </p>
+            <Textarea
+              disabled={status !== "awaiting-answer"}
+              onChange={(e) => setAnswer(e.target.value)}
+              value={answer ?? ""}
+              placeholder={
+                status === "awaiting-answer"
+                  ? "Type your answer here..."
+                  : "Waiting for question..."
+              }
+              className="w-full h-full resize-none border-none rounded-none focus-visible:ring-0 !text-base font-sans p-8 pt-10 bg-transparent leading-relaxed"
+            />
+          </div>
         </ScrollArea>
       </ResizablePanel>
     </ResizablePanelGroup>
@@ -223,7 +264,7 @@ function Controls({
             disabled={disableAnswerButton}
             size="sm"
           >
-            <LoadingSwap isLoading={isLoading}>Answer</LoadingSwap>
+            <LoadingSwap isLoading={isLoading}>Submit Answer</LoadingSwap>
           </Button>
         </>
       ) : (
@@ -232,8 +273,9 @@ function Controls({
             key={difficulty}
             disabled={isLoading}
             onClick={() => generateQuestion(difficulty)}
+            variant="outline"
             size="sm"
-            className="cursor-pointer"
+            className="cursor-pointer hover:border-copper hover:text-copper"
           >
             <LoadingSwap isLoading={isLoading}>
               {formatQuestionDifficulty(difficulty)}

@@ -1,31 +1,32 @@
 "use client";
 
-import { Info, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useState } from "react";
 import { isDemoMode } from "@/app/data/demoConfig";
 
 export function DemoBanner() {
   const [isVisible, setIsVisible] = useState(true);
 
-  // Only show banner if demo mode is enabled
   if (!isDemoMode() || !isVisible) return null;
 
   return (
-    <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-center gap-3 py-3 text-sm sm:text-base">
-          <Info className="w-5 h-5 flex-shrink-0" />
-          <p className="text-center font-medium">
-            <span className="font-bold">Portfolio Demo Mode:</span> Try all
-            features with limited usage. This is a showcase project — no real
-            billing or data storage.
+    <div className="relative bg-foreground text-background border-b border-copper/20">
+      <div className="container mx-auto">
+        <div className="flex items-center justify-center gap-4 py-2.5">
+          <div className="w-1.5 h-1.5 rounded-full bg-copper animate-copper-pulse shrink-0" />
+          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-center">
+            <span className="text-copper font-medium">Portfolio Demo</span>
+            <span className="text-background/50 mx-2">&middot;</span>
+            <span className="text-background/60">
+              All features available with limited usage. No billing or permanent storage.
+            </span>
           </p>
           <button
             onClick={() => setIsVisible(false)}
-            className="flex-shrink-0 p-1 hover:bg-white/20 rounded transition-colors ml-2"
+            className="shrink-0 p-1 hover:text-copper transition-colors"
             aria-label="Close banner"
           >
-            <X className="w-5 h-5" />
+            <X className="w-3 h-3" />
           </button>
         </div>
       </div>
